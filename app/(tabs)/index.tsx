@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import Button from '@/components/Button';
 import CircleButton from '@/components/CircleButton';
+import EmojiPickerModal from '@/components/EmojiPickerModal';
 import IconButton from '@/components/IconButton';
 import ImageViewer from '@/components/ImageViewer';
 
@@ -14,6 +15,8 @@ export default function Index() {
     undefined
   );
   const [showSelectedImageAction, setShowSelectedImageAction] =
+    useState<boolean>(false);
+  const [isEmojiPickerModalOpen, setIsEmojiPickerModalOpen] =
     useState<boolean>(false);
 
   const pickImageAsync = async () => {
@@ -36,7 +39,11 @@ export default function Index() {
   };
 
   const onAddSticker = () => {
-    // we will implement this later
+    setIsEmojiPickerModalOpen(true);
+  };
+
+  const onEmojiPickerModalClose = () => {
+    setIsEmojiPickerModalOpen(false);
   };
 
   const onSaveImageAsync = async () => {
@@ -77,6 +84,13 @@ export default function Index() {
           />
         </View>
       )}
+
+      <EmojiPickerModal
+        isOpen={isEmojiPickerModalOpen}
+        onClose={onEmojiPickerModalClose}
+      >
+        {/* Emoji list component will go here */}
+      </EmojiPickerModal>
     </View>
   );
 }
