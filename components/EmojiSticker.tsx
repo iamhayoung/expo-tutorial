@@ -1,4 +1,4 @@
-import { ImageSourcePropType, View } from 'react-native';
+import { ImageSourcePropType } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -13,6 +13,9 @@ type Props = {
 
 export default function EmojiSticker({ imageSize, stickerSource }: Props) {
   const scaleImage = useSharedValue(imageSize);
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+
   const doubleTab = Gesture.Tap()
     .numberOfTaps(2)
     .onStart(() => {
@@ -30,21 +33,31 @@ export default function EmojiSticker({ imageSize, stickerSource }: Props) {
     };
   });
 
+  const drag = Gesture.Pan().onChange((event) => {
+    translateX.value += event.changeX;
+    translateY.value += event.changeY;
+  });
+
+  const containerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+      ],
+    };
+  });
+
   return (
-    <View
-      style={{
-        // TODO: position should be dynamic
-        top: -350,
-        left: 150,
-      }}
-    >
-      <GestureDetector gesture={doubleTab}>
-        <Animated.Image
-          source={stickerSource}
-          resizeMode="contain"
-          style={[imageStyle, { width: imageSize, height: imageSize }]}
-        />
-      </GestureDetector>
-    </View>
+    <GestureDetector gesture={drag}>
+      <Animated.View style={[containerStyle, { top: -350 }]}>
+        <GestureDetector gesture={doubleTab}>
+          <Animated.Image
+            source={stickerSource}
+            resizeMode="contain"
+            style={[imageStyle, { width: imageSize, height: imageSize }]}
+          />
+        </GestureDetector>
+      </Animated.View>
+    </GestureDetector>
   );
 }
