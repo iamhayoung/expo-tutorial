@@ -1,6 +1,8 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import * as MediaLibrary from 'expo-media-library';
+import { useEffect, useState } from 'react';
 import { ImageSourcePropType, StyleSheet, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Button from '@/components/Button';
 import CircleButton from '@/components/CircleButton';
@@ -9,11 +11,12 @@ import EmojiPickerModal from '@/components/EmojiPickerModal';
 import EmojiSticker from '@/components/EmojiSticker';
 import IconButton from '@/components/IconButton';
 import ImageViewer from '@/components/ImageViewer';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const PlaceholderImage = require('@/assets/images/background-image.png');
 
 export default function Index() {
+  const [permissionResponse, requestPermission] = MediaLibrary.usePermissions();
+
   const [selectedImage, setSelectedImage] = useState<string | undefined>(
     undefined
   );
@@ -55,6 +58,12 @@ export default function Index() {
   const onSaveImageAsync = async () => {
     // we will implement this later
   };
+
+  useEffect(() => {
+    if (!permissionResponse?.granted) {
+      requestPermission();
+    }
+  }, [permissionResponse, requestPermission]);
 
   return (
     <GestureHandlerRootView style={styles.container}>
