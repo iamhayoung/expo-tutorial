@@ -24,9 +24,7 @@ export default function Button({ label, theme, onPress }: Props) {
           styles.button,
           theme === 'primary' && { backgroundColor: '#fff' },
         ]}
-        onPress={
-          theme === 'primary' ? onPress : () => alert('You pressed a button.')
-        }
+        onPress={onPress}
       >
         {theme === 'primary' && (
           <FontAwesome
